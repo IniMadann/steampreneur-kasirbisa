@@ -1,49 +1,83 @@
-# Bug Hunt: Kasir Kantin STEAM
+# Kasir Bisa
 
-Aplikasi ini adalah kasir sederhana untuk kantin sekolah. Aplikasinya bisa dibuka dan dipakai, tetapi **ada beberapa bug** di dalamnya. Jumlah bug sengaja tidak diberitahukan.
+Kasir Bisa adalah aplikasi kasir berbasis web untuk membantu kasir kantin sekolah mencatat pesanan, menghitung pembayaran, dan melihat riwayat transaksi. Aplikasi ini dibuat oleh tim Kasir Bisa untuk Sayembara STEAMpreneur.
 
-Tugas tim kalian: temukan bug, perbaiki, buktikan dengan pengujian, dan jelaskan setiap perbaikan. AI boleh dipakai, tetapi ingat bahwa AI juga bisa melewatkan bug atau "memperbaiki" hal yang sebenarnya tidak rusak.
+## Fitur
 
-## Cara menjalankan
+- Memilih produk dari katalog contoh dan menambahkannya ke keranjang.
+- Menggabungkan jumlah saat produk yang sama ditambahkan kembali, dengan batas 1–99 per produk.
+- Menghitung subtotal, diskon, PPN 11%, total, dan kembalian.
+- Menerapkan diskon member 10%, atau diskon non-member 5% jika subtotal minimal Rp100.000. Diskon tidak ditumpuk.
+- Menolak jumlah yang tidak valid dan pembayaran yang kurang.
+- Menyimpan transaksi berhasil di `localStorage` browser.
+- Menampilkan rekap transaksi dengan pencarian waktu, produk, atau nominal; filter produk; serta ekspor CSV mengikuti hasil filter.
 
-1. Buka file `index.html` di browser (klik dua kali sudah cukup).
-2. Untuk menjalankan pengujian, buka terminal di folder ini lalu ketik:
-   ```
-   node --test
-   ```
-   Node.js (versi 18 atau lebih baru) otomatis menjalankan semua file yang namanya berakhiran `.test.js`, jadi beri nama file test kalian dengan pola itu.
+## Alur Inti
 
-## Isi folder
+1. Kasir memilih produk dan jumlahnya, lalu menambahkannya ke keranjang.
+2. Kasir memeriksa rincian belanja: subtotal, diskon, PPN, dan total.
+3. Kasir memasukkan uang pembayaran. Jika pembayaran cukup, aplikasi menghitung kembalian dan menyimpan transaksi.
+4. Kasir dapat membuka halaman rekap untuk melihat transaksi tersimpan, mencari atau memfilter transaksi, dan mengunduh hasilnya sebagai CSV.
 
-| File | Isi |
+## Cara Menjalankan
+
+Aplikasi tidak memerlukan instalasi paket. Jalankan melalui server web lokal agar penyimpanan browser dapat digunakan secara konsisten.
+
+### Menggunakan XAMPP
+
+1. Letakkan folder proyek di dalam direktori `htdocs` XAMPP.
+2. Jalankan Apache dari XAMPP Control Panel.
+3. Buka `src/index.html` melalui alamat lokal proyek, misalnya `http://localhost/nama-folder-proyek/src/`.
+4. Pilih **Lihat rekap transaksi** untuk membuka halaman rekap.
+
+### Prasyarat
+
+- Browser modern seperti Chrome, Edge, atau Firefox.
+- Node.js versi 18 atau lebih baru untuk menjalankan pengujian.
+
+Tidak ada login atau akun. Produk dan harga yang tersedia merupakan data contoh, bukan katalog harga kantin yang telah dikonfirmasi.
+
+## Menjalankan Pengujian
+
+Dari direktori utama proyek, jalankan:
+
+```sh
+node --test test/*.test.js
+```
+
+Pengujian menggunakan test runner bawaan Node.js, tanpa paket tambahan. Kasus uji dan bukti pengujian manual tersedia di `docs/04-kasus-uji.md` dan `docs/bukti/`.
+
+## Perhitungan
+
+- **Subtotal** adalah jumlah harga produk dikalikan kuantitasnya.
+- **Diskon**: member mendapat 10%; non-member mendapat 5% jika subtotal minimal Rp100.000. Hanya satu jenis diskon yang berlaku.
+- **PPN** sebesar 11% dihitung dari subtotal setelah diskon dan dibulatkan ke rupiah terdekat.
+- **Total** adalah subtotal dikurangi diskon, ditambah PPN.
+- Transaksi hanya disimpan setelah pembayaran mencukupi. Kembalian adalah jumlah dibayar dikurangi total.
+
+## Penyimpanan dan Batasan
+
+Riwayat transaksi disimpan di `localStorage`, sehingga tersedia kembali setelah halaman dimuat ulang pada browser dan perangkat yang sama. Data tidak disinkronkan ke server atau perangkat lain. Keranjang yang belum dibayar hanya tersimpan selama halaman kasir aktif.
+
+Aplikasi ini tidak mencakup login, basis data server, sinkronisasi antarperangkat, pembayaran digital, printer struk, pengelolaan stok, atau pengelolaan katalog melalui halaman administrasi.
+
+## Struktur Proyek
+
+| Lokasi | Isi |
 |---|---|
-| `index.html` | Halaman kasir |
-| `app.js` | Kode tampilan: menghubungkan halaman dengan logika |
-| `kasir.js` | Seluruh aturan bisnis: keranjang, diskon, PPN, total, kembalian |
-| `tes/contoh.test.js` | Contoh format pengujian |
+| `src/` | Aplikasi web kasir, halaman rekap, logika transaksi, dan stylesheet |
+| `test/` | Pengujian otomatis untuk logika kasir dan rekap |
+| `docs/` | Spesifikasi, rencana, dokumentasi proses, kasus uji, dan bukti |
+| `bughunt-kasir/` | Berkas dan dokumentasi untuk kegiatan Bug Hunt |
 
-## Aturan bisnis (spesifikasi resmi)
+## Repositori
 
-Aplikasi yang benar **harus** memenuhi aturan berikut. Jika perilaku aplikasi berbeda dari aturan ini, itu adalah bug.
+[steampreneur-kasirbisa](https://github.com/IniMadann/steampreneur-kasirbisa)
 
-1. **Jumlah pesanan** per produk harus bilangan bulat dari 1 sampai 99. Jumlah kosong, nol, negatif, atau pecahan harus ditolak dengan pesan kesalahan.
-2. Jika produk yang **sudah ada** di keranjang ditambahkan lagi, jumlahnya dijumlahkan. Contoh: Es Teh 2, lalu tambah Es Teh 3, maka di keranjang tertulis Es Teh 5. Total jumlah per produk tetap tidak boleh lebih dari 99.
-3. **Subtotal** = jumlah dari (harga x jumlah) semua produk di keranjang.
-4. **Diskon** (tidak boleh digabung, hanya satu yang berlaku):
-   - Pelanggan **member** mendapat diskon **10%** dari subtotal.
-   - Pelanggan **bukan member** dengan subtotal **minimal Rp100.000** mendapat diskon **5%** dari subtotal.
-   - Selain itu, tidak ada diskon.
-   - Nilai diskon dibulatkan ke rupiah terdekat.
-5. **PPN 11%** dihitung dari (subtotal dikurangi diskon), lalu **dibulatkan ke rupiah terdekat** (0,5 ke atas dibulatkan naik).
-6. **Total** = subtotal - diskon + PPN.
-7. **Pembayaran**: jika uang yang dibayar kurang dari total, transaksi ditolak dengan pesan "Uang pembayaran kurang". Jika cukup, kembalian = uang dibayar - total.
+## Tim
 
-## Yang harus dikumpulkan
-
-Semua hasil Bug Hunt disimpan di folder `bughunt-kasir/` di repositori GitHub tim kalian.
-
-1. **Sebelum mengubah apa pun**, salin folder ini ke repositori, lalu commit dengan pesan `bughunt: kode asli` dan push. Commit ini menjadi pembanding bagi juri.
-2. Perbaiki setiap bug dalam **commit terpisah**, dengan pesan berawalan `perbaikan:`. Contoh format: `perbaikan: <jelaskan bug yang diperbaiki>`.
-3. Tambahkan test di folder `tes/` yang membuktikan setiap bug sudah diperbaiki. Test seharusnya **gagal** pada kode asli dan **lulus** pada kode yang sudah diperbaiki.
-4. Isi `catatan-bug.md` (template ada di `template-dokumen.zip`) dan simpan di folder ini.
-5. Waktu pengerjaan 60 menit dihitung sejak commit `bughunt: kode asli`. Commit di folder ini yang dibuat lebih dari 60 menit setelah commit tersebut tidak dinilai.
+| Nama | Peran |
+|---|---|
+| Laode Azharil Nur Ibrahim Nunsyah | Navigator utama |
+| Ahmad Fadil | Penguji |
+| Muh. Rizky Ramadhan | Dokumentator |

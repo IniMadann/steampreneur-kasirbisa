@@ -1,39 +1,39 @@
 # Analisis Change Request
 
-**Change request:** Menambahkan pencarian dan filter produk pada halaman rekap transaksi, serta ekspor CSV dari hasil yang sedang ditampilkan.
+**Change request:** Menambahkan pencarian transaksi, filter produk, dan ekspor CSV pada halaman rekap transaksi.
 
-**Status:** Pencarian, filter produk, dan ekspor CSV sudah diimplementasikan. Pencarian/filter telah diretest di browser dengan screenshot bukti; format CSV diuji lewat unit test dan unduhan browser.
+**Ruang lingkup kode:** Change request diterapkan pada halaman rekap aplikasi utama: `src/rekap.html` dan `src/rekap.js`. Perilaku tersebut berbeda dari halaman kasir di `src/index.html`; transaksi yang direkap dibaca dari localStorage melalui `src/transaksi.js`.
+
+**Status:** Pencarian, filter produk, dan ekspor CSV tersedia. Unit test di `test/rekap.test.js` memeriksa pencarian, filter, hasil kosong, format, dan isi CSV. Screenshot rekap yang tersimpan saat ini berasal dari antarmuka sebelumnya dan belum menjadi bukti retest final untuk versi `src/` yang sekarang.
 
 ## 1. Dampak
 
 | Bagian yang terdampak | File / fungsi | Perubahan yang diperlukan |
 |---|---|---|
-| Spesifikasi | `01-spesifikasi.md` | Mencatat kriteria pencarian dan filter produk yang sudah dipilih; ekspor CSV tetap terpisah. |
-| Kode | `src/rekap.html` dan `src/rekap.js` | Kolom pencarian transaksi dan filter berdasarkan produk; keduanya dapat digunakan bersamaan. |
-| Kasus uji / test | `04-kasus-uji.md` dan `test/rekap.test.js` | Menguji pencarian tanpa membedakan kapital, pencarian nominal, filter produk, kombinasi filter, dan hasil kosong. |
-| Ekspor CSV | `src/rekap.html`, `src/rekap.js`, dan `test/rekap.test.js` | Tombol mengunduh transaksi yang sedang tampil setelah filter; kolom dan angka memakai format CSV yang dapat dibuka di Excel. |
-| README | `README.md` | Menjelaskan pencarian dan filter yang tersedia serta status ekspor CSV. |
+| Spesifikasi | `01-spesifikasi.md` | Mencatat pencarian teks, filter produk, penggabungan kriteria, keadaan tanpa hasil, dan format ekspor. |
+| Halaman rekap | `src/rekap.html` | Menyediakan kolom pencarian, filter produk, tombol hapus filter, tabel transaksi, dan tombol unduh CSV. |
+| Logika rekap | `src/rekap.js` | Menyaring transaksi yang ditampilkan dan membuat CSV dari hasil pencarian/filter yang aktif. |
+| Pengujian | `test/rekap.test.js` | Menguji kapitalisasi pencarian, pencarian nominal, filter produk, hasil gabungan/kosong, escaping CSV, dan pembatasan unduh. |
+| Dokumentasi | `04-kasus-uji.md` dan `README.md` | Menjelaskan cara menguji dan menggunakan halaman rekap; bukti screenshot harus sesuai dengan halaman saat ini. |
 
-## 2. Kasus uji baru
+## 2. Kasus uji
 
 | ID | Langkah / input | Hasil yang diharapkan |
 |---|---|---|
-| CR01 | Masukkan kata kunci yang cocok pada kolom pencarian. | Transaksi yang sesuai tampil; pencarian tidak membedakan huruf besar dan kecil. |
-| CR02 | Masukkan kata kunci yang tidak cocok dengan transaksi mana pun. | Tabel menampilkan pesan `Data tidak ditemukan`. |
-| CR03 | Pilih nama produk pada filter produk. | Hanya transaksi yang memuat produk itu yang tampil. |
-| CR04 | Terapkan kata kunci dan filter produk bersamaan. | Hanya transaksi yang memenuhi kedua kriteria yang tampil. |
-| CR05 | Klik `Hapus filter` setelah pencarian/filter digunakan. | Kolom pencarian dan filter kembali kosong dan seluruh transaksi tampil. |
+| CR01 | Cari teks yang cocok dengan transaksi, dengan huruf besar/kecil berbeda. | Transaksi cocok tampil karena pencarian tidak membedakan kapitalisasi. |
+| CR02 | Cari sebagian nominal yang terlihat pada rekap. | Transaksi dengan nominal tersebut tampil. |
+| CR03 | Pilih nama produk pada filter produk. | Hanya transaksi yang memuat produk tersebut tampil. |
+| CR04 | Terapkan kata kunci dan filter produk bersamaan. | Hanya transaksi yang memenuhi kedua kriteria tampil. |
+| CR05 | Masukkan kata kunci yang tidak cocok dengan transaksi mana pun. | Tabel menampilkan `Data tidak ditemukan`. |
+| CR06 | Klik `Hapus filter`. | Kolom pencarian dan filter produk kembali kosong; semua transaksi tampil. |
+| CR07 | Unduh CSV setelah pencarian/filter menghasilkan data. | CSV hanya berisi transaksi yang tampil, memiliki header, meng-escape isi sel, dan memakai angka nominal tanpa format mata uang/pemisah ribuan. |
 
-**Catatan:** Filter yang dipilih untuk rekap adalah filter berdasarkan produk, karena transaksi berisi daftar produk yang dibeli. Pencarian mencocokkan teks yang terlihat pada rekap (waktu, nama/kuantitas produk, dan nominal). CSV pada salinan patch masih mengekspor semua transaksi tersimpan.
+Kasus dan status pengujian rinci berada di `04-kasus-uji.md`. Fixture `Es Teh` pada unit test rekap adalah data uji historis; produk tersebut bukan bagian dari katalog aplikasi saat ini.
 
-## 3. Setelah selesai
+## 3. Status verifikasi
 
-- [x] Unit test logika pencarian dan filter sudah ditambahkan.
-- [x] Spesifikasi diperbarui untuk pencarian dan filter produk.
-- [x] Kasus uji pencarian/filter CR01–CR06 sudah dijalankan dan dibuktikan dengan screenshot di browser.
-- [x] Ekspor CSV telah diintegrasikan; header, angka mentah, escaping, dan unduhan browser telah diuji.
-- [x] README diperbarui dengan petunjuk pencarian/filter dan status CSV.
-- [x] Analisis perubahan dicatat sebelum perubahan kode dilakukan.
-- [ ] Commit dan push dilakukan sesuai aturan pengumpulan.
+- Unit test pencarian, filter, hasil kosong, CSV, dan pencegahan ekspor tanpa hasil tersedia di `test/rekap.test.js` dan lulus pada pengujian proyek.
+- Implementasi ekspor menggunakan hasil yang sama dengan pencarian/filter aktif, bukan seluruh transaksi tanpa penyaringan.
+- Pemeriksaan browser pada halaman rekap versi saat ini telah memastikan transaksi yang tersimpan tampil sesudah pemuatan ulang.
+- Screenshot rekap lama menggunakan antarmuka/data dari iterasi sebelumnya. Screenshot itu perlu diganti sebelum digunakan sebagai bukti final change request; status ini juga dicatat di `04-kasus-uji.md`.
 
-**Status akhir:** Pencarian, filter produk, dan ekspor CSV tersedia di halaman rekap. Unit test lulus; retest browser CR01–CR06 dan unduhan CSV telah dijalankan. Screenshot pencarian/filter tersimpan di `docs/bukti/`.

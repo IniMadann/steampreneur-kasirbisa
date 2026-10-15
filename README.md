@@ -21,14 +21,7 @@ Kasir Bisa adalah aplikasi kasir berbasis web untuk membantu kasir kantin sekola
 
 ## Cara Menjalankan
 
-Aplikasi tidak memerlukan instalasi paket. Jalankan melalui server web lokal agar penyimpanan browser dapat digunakan secara konsisten.
-
-### Menggunakan XAMPP
-
-1. Letakkan folder proyek di dalam direktori `htdocs` XAMPP.
-2. Jalankan Apache dari XAMPP Control Panel.
-3. Buka `src/index.html` melalui alamat lokal proyek, misalnya `http://localhost/nama-folder-proyek/src/`.
-4. Pilih **Lihat rekap transaksi** untuk membuka halaman rekap.
+Aplikasi ini adalah website statis dan tidak memerlukan XAMPP, server, atau instalasi paket untuk dijalankan. Buka file `src/index.html` langsung dengan browser, atau gunakan cara biasa yang sudah Anda pakai untuk menjalankan website statis. Pilih **Lihat rekap transaksi** untuk membuka halaman rekap.
 
 ### Prasyarat
 

@@ -1,88 +1,152 @@
-/*
- * Test untuk setiap bug yang diperbaiki di kasir.js.
- * Jalankan dari folder tugas: node --test test/*.test.js
- */
-
 const test = require("node:test");
-const assert = require("node:assert");
+const assert = require("node:assert/strict");
 const kasir = require("../src/kasir.js");
 
-// Bug 1 (Aturan 1)
-test("jumlah produk harus bilangan bulat dari 1 sampai 99", () => {
-  for (const salah of [0, -5, 1.5, "1,5", "", " ", "abc", 100, "100", NaN, undefined]) {
-    const keranjang = [];
-    assert.throws(() => kasir.tambahItem(keranjang, "K04", salah), Error, "harus ditolak: " + salah);
-    assert.strictEqual(keranjang.length, 0);
-  }
-  for (const benar of [1, 99, "1", "99"]) {
-    const keranjang = [];
-    kasir.tambahItem(keranjang, "K04", benar);
-    assert.strictEqual(keranjang[0].qty, Number(benar));
-  }
+test("katalog produk memuat nama, kategori, harga, dan aset KASIR BISA", () => {
+  assert.equal(kasir.MENU.length, 14);
+  assert.deepEqual(
+    kasir.cariProduk("K01"),
+    {
+      kode: "K01",
+      id: 1,
+      nama: "Nasi kuning",
+      kategori: "Makanan",
+      harga: 8000,
+      gambar: "gambar/nasikuning.png",
+    }
+  );
+  assert.equal(kasir.cariProduk("K13").nama, "Bakwan");
+  assert.equal(kasir.cariProduk("tidak-ada"), undefined);
 });
 
-// Bug 2 (Aturan 7)
+test("pencarian produk tanpa membedakan kapital dan filter kategori dapat digabung", () => {
+  assert.deepEqual(
+    kasir.saringProduk(kasir.MENU, "NASI", "Makanan").map((produk) => produk.nama),
+    ["Nasi kuning", "Nasi Goreng"]
+  );
+  assert.deepEqual(
+    kasir.saringProduk(kasir.MENU, "", "Minuman").map((produk) => produk.nama),
+    ["Air Mineral", "Susu Kotak"]
+  );
+  assert.deepEqual(kasir.saringProduk(kasir.MENU, "tidak ada"), []);
+});
+
+test("produk masuk ke keranjang dan subtotal menghitung harga kali jumlah", () => {
+  const keranjang = [];
+  kasir.tambahItem(keranjang, "K01", 2);
+  kasir.tambahItem(keranjang, "K13", 3);
+  assert.equal(keranjang.length, 2);
+  assert.equal(kasir.hitungSubtotal(keranjang), 22000);
+});
+
+test("penambahan produk yang sama menggabungkan jumlah secara numerik", () => {
+  const keranjang = [];
+  kasir.tambahItem(keranjang, "K02", "2");
+  kasir.tambahItem(keranjang, "K02", "3");
+  assert.equal(keranjang.length, 1);
+  assert.equal(keranjang[0].qty, 5);
+  assert.equal(kasir.hitungSubtotal(keranjang), 25000);
+});
+
+test("jumlah dan perubahan jumlah dibatasi ke bilangan bulat 1 sampai 99", () => {
+  for (const salah of [0, -1, 1.5, "1,5", "", " ", "abc", 100, NaN]) {
+    assert.throws(() => kasir.tambahItem([], "K01", salah), /Jumlah harus bilangan bulat/);
+  }
+  for (const benar of [1, 99, "1", "99"]) {
+    assert.equal(kasir.tambahItem([], "K01", benar)[0].qty, Number(benar));
+  }
+  assert.throws(
+    () => kasir.ubahJumlah([{ kode: "K01", qty: 1 }], "K01", 0),
+    /Jumlah harus bilangan bulat/
+  );
+  assert.throws(
+    () => kasir.ubahJumlah([{ kode: "K01", qty: 1 }], "K01", undefined),
+    /Jumlah harus bilangan bulat/
+  );
+  assert.throws(() => kasir.tambahItem([], "tidak-ada", 1), /Produk tidak ditemukan/);
+});
+
+test("jumlah produk yang sama tidak dapat melebihi 99 dan tetap tidak berubah saat ditolak", () => {
+  const keranjang = [];
+  kasir.tambahItem(keranjang, "K13", 99);
+  assert.throws(() => kasir.tambahItem(keranjang, "K13", 1), /tidak boleh lebih dari 99/);
+  assert.equal(keranjang[0].qty, 99);
+  kasir.ubahJumlah(keranjang, "K13", 98);
+  kasir.tambahItem(keranjang, "K13", 1);
+  assert.equal(keranjang[0].qty, 99);
+});
+
+test("produk dalam keranjang dapat diubah dan dihapus", () => {
+  let keranjang = [];
+  kasir.tambahItem(keranjang, "K01", 1);
+  kasir.ubahJumlah(keranjang, "K01", 4);
+  assert.equal(keranjang[0].qty, 4);
+  keranjang = kasir.hapusItem(keranjang, "K01");
+  assert.deepEqual(keranjang, []);
+});
+
+test("diskon member dan diskon non-member tidak ditumpuk", () => {
+  assert.equal(kasir.hitungDiskon(99999, false), 0);
+  assert.equal(kasir.hitungDiskon(100000, false), 5000);
+  assert.equal(kasir.hitungDiskon(120000, false), 6000);
+  assert.equal(kasir.hitungDiskon(120000, true), 12000);
+  assert.equal(kasir.hitungDiskon(100000, true), 10000);
+});
+
+test("PPN 11 persen dihitung setelah diskon dan 0,5 dibulatkan naik", () => {
+  assert.equal(kasir.hitungPPN(156750), 17243);
+  const keranjang = [];
+  kasir.tambahItem(keranjang, "K01", 13);
+  assert.deepEqual(kasir.hitungRingkasan(keranjang, false), {
+    subtotal: 104000,
+    diskon: 5200,
+    ppn: 10868,
+    total: 109668,
+  });
+  assert.deepEqual(kasir.hitungRingkasan(keranjang, true), {
+    subtotal: 104000,
+    diskon: 10400,
+    ppn: 10296,
+    total: 103896,
+  });
+});
+
 test("pembayaran kurang ditolak dan pembayaran cukup menghitung kembalian", () => {
   assert.throws(() => kasir.hitungKembalian(16650, 1000), /Uang pembayaran kurang/);
   assert.throws(() => kasir.hitungKembalian(16650, 16649), /Uang pembayaran kurang/);
-  assert.throws(() => kasir.hitungKembalian(16650, NaN), /Uang pembayaran kurang/);
-  assert.strictEqual(kasir.hitungKembalian(16650, 16650), 0);
-  assert.strictEqual(kasir.hitungKembalian(16650, 20000), 3350);
+  assert.throws(() => kasir.hitungKembalian(16650, NaN), /jumlah uang yang valid/);
+  assert.throws(() => kasir.hitungKembalian(16650, 16650.5), /jumlah uang yang valid/);
+  assert.equal(kasir.hitungKembalian(16650, 16650), 0);
+  assert.equal(kasir.hitungKembalian(16650, 20000), 3350);
 });
 
-// Bug 3 (Aturan 2)
-test("penambahan produk yang sama menjumlahkan kuantitas sebagai angka", () => {
+test("transaksi hanya dibuat jika total cukup dan menyimpan rincian lengkap", () => {
   const keranjang = [];
-  kasir.tambahItem(keranjang, "K04", "2"); // nilai dari input berupa teks
-  kasir.tambahItem(keranjang, "K04", "3");
-  assert.strictEqual(keranjang.length, 1);
-  assert.strictEqual(keranjang[0].qty, 5);
-  assert.strictEqual(kasir.hitungSubtotal(keranjang), 20000);
-
-  const k2 = [];
-  kasir.tambahItem(k2, "K01", "1");
-  kasir.tambahItem(k2, "K01", "1");
-  assert.strictEqual(k2[0].qty, 2);
+  kasir.tambahItem(keranjang, "K01", 13);
+  const transaksi = kasir.buatTransaksi(keranjang, 110000, false, "2026-10-16T00:00:00.000Z");
+  assert.deepEqual(transaksi, {
+    waktu: "2026-10-16T00:00:00.000Z",
+    items: [{ kode: "K01", nama: "Nasi kuning", harga: 8000, qty: 13 }],
+    subtotal: 104000,
+    diskon: 5200,
+    ppn: 10868,
+    total: 109668,
+    dibayar: 110000,
+    kembalian: 332,
+    member: false,
+  });
+  assert.throws(() => kasir.buatTransaksi([], 0), /Keranjang masih kosong/);
+  assert.throws(() => kasir.buatTransaksi(keranjang, 109667), /Uang pembayaran kurang/);
 });
 
-// Bug 4 (Aturan 2)
-test("jumlah gabungan produk yang sama tidak boleh lebih dari 99", () => {
-  const keranjang = [];
-  kasir.tambahItem(keranjang, "K04", "99");
-  assert.throws(() => kasir.tambahItem(keranjang, "K04", "1"), Error);
-  assert.strictEqual(keranjang[0].qty, 99);
-
-  const k2 = [];
-  kasir.tambahItem(k2, "K04", 98);
-  kasir.tambahItem(k2, "K04", 1); // tepat 99 masih boleh
-  assert.strictEqual(k2[0].qty, 99);
-});
-
-// Bug 5 (Aturan 4)
-test("non-member mendapat diskon 5 persen mulai subtotal Rp100.000", () => {
-  assert.strictEqual(kasir.hitungDiskon(99999, false), 0);
-  assert.strictEqual(kasir.hitungDiskon(100000, false), 5000);
-  assert.strictEqual(kasir.hitungDiskon(120000, false), 6000);
-  const keranjang = [];
-  kasir.tambahItem(keranjang, "K04", 25);
-  const r = kasir.hitungRingkasan(keranjang, false);
-  assert.deepStrictEqual(r, { subtotal: 100000, diskon: 5000, ppn: 10450, total: 105450 });
-});
-
-// Bug 6 (Aturan 4)
-test("diskon member 10 persen tidak ditumpuk dengan diskon belanja", () => {
-  assert.strictEqual(kasir.hitungDiskon(120000, true), 12000);
-  assert.strictEqual(kasir.hitungDiskon(50000, true), 5000);
-  assert.strictEqual(kasir.hitungDiskon(100000, true), 10000);
-});
-
-// Bug 7 (Aturan 5)
-test("PPN 11 persen dibulatkan ke rupiah terdekat", () => {
-  assert.strictEqual(kasir.hitungPPN(156750), 17243); // 17242,5 dibulatkan naik
-  assert.strictEqual(kasir.hitungPPN(100), 11);
-  assert.strictEqual(kasir.hitungPPN(0), 0);
-  const keranjang = [];
-  kasir.tambahItem(keranjang, "K01", 11);
-  const r = kasir.hitungRingkasan(keranjang, false);
-  assert.deepStrictEqual(r, { subtotal: 165000, diskon: 8250, ppn: 17243, total: 173993 });
+test("ringkasan penjualan dan nominal pembayaran cepat dihitung", () => {
+  assert.deepEqual(
+    kasir.hitungRingkasanPenjualan([
+      { total: 18000, items: [{ nama: "Bakwan", qty: 2 }] },
+      { total: 8000, items: [{ nama: "Nasi kuning", qty: 1 }] },
+    ]),
+    { jumlahTransaksi: 2, totalPenjualan: 26000, totalProduk: 3 }
+  );
+  assert.deepEqual(kasir.nominalPembayaranCepat(8880), [8880, 10000, 20000, 50000]);
+  assert.deepEqual(kasir.nominalPembayaranCepat(0), []);
 });

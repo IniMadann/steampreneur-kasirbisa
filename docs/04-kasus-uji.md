@@ -40,9 +40,9 @@ Salinan C01–C07 berada di `docs/bukti/`; sumber aslinya tetap berada di `bughu
 | CR04 | Terapkan pencarian dan filter produk bersamaan. | Hanya transaksi yang cocok dengan kedua kriteria yang tampil. | Lulus; kombinasi tanpa hasil menampilkan pesan yang benar; [screenshot](./bukti/CR04-retest-kombinasi-tanpa-hasil.png) |
 | CR05 | Masukkan kata pencarian yang tidak cocok dengan transaksi mana pun. | Tabel menampilkan pesan `Data tidak ditemukan`. | Lulus; [screenshot](./bukti/CR05-retest-data-tidak-ditemukan.png) |
 | CR06 | Klik `Hapus filter`. | Kolom pencarian dan filter produk kembali kosong; semua transaksi tampil. | Lulus; [screenshot](./bukti/CR06-retest-hapus-filter.png) |
-| CR07 | Buat pencarian dan pilih filter produk, lalu klik `Unduh CSV`. Buka berkas hasil unduhan dan bandingkan isinya dengan transaksi yang tampil di rekap. | Berkas CSV berhasil diunduh dan hanya memuat transaksi yang cocok dengan pencarian serta filter aktif. Baris pertama berisi nama kolom; nilai nominal berupa angka tanpa simbol mata uang atau pemisah ribuan. Isi berkas sesuai dengan transaksi yang tampil di rekap. | Belum diuji; isi setelah pengujian browser benar-benar dilakukan dan bukti yang sesuai disimpan. |
+| CR07 | Buat pencarian dan pilih filter produk, lalu klik `Unduh CSV`. Buka berkas hasil unduhan dan bandingkan isinya dengan transaksi yang tampil di rekap. | Berkas CSV berhasil diunduh dan hanya memuat transaksi yang cocok dengan pencarian serta filter aktif. Baris pertama berisi nama kolom; nilai nominal berupa angka tanpa simbol mata uang atau pemisah ribuan. Isi berkas sesuai dengan transaksi yang tampil di rekap. | Lulus; pencarian `Nasi Goreng` dan filter produk `Nasi Goreng` menampilkan satu transaksi. CSV hanya berisi transaksi tersebut, memiliki header, dan nilai nominal berupa angka tanpa simbol/pemisah ribuan. [screenshot rekap berfilter](./bukti/csv/CR07-retest-filter-csv.png) |
 
-Logika pencarian/filter juga diuji otomatis di `test/rekap.test.js`. Retest tampilan browser dan screenshot CR01–CR06 selesai pada 15 Oktober 2026.
+Logika pencarian/filter dan format CSV juga diuji otomatis di `test/rekap.test.js`. Retest browser CR01–CR06 selesai pada 15 Oktober 2026; CR07 selesai diuji pada 16 Oktober 2026.
 
 ## Kasus uji batas jumlah pada formulir
 

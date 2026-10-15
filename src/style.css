@@ -1,0 +1,283 @@
+:root {
+  --biru: #1f4e79;
+  --abu: #f3f5f8;
+  --garis: #d5dbe3;
+  --merah: #b42318;
+  --hijau: #1a7f37;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--abu);
+  color: #1d2733;
+}
+
+header {
+  background: var(--biru);
+  color: white;
+  padding: 16px 24px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+header p {
+  margin: 4px 0 0;
+  opacity: 0.85;
+  font-size: 14px;
+}
+
+header a {
+  color: white;
+}
+
+main {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 16px;
+}
+
+section {
+  background: white;
+  border: 1px solid var(--garis);
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 17px;
+  color: var(--biru);
+}
+
+form,
+.baris-bayar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  gap: 4px;
+}
+
+select,
+input[type=number] {
+  padding: 8px;
+  font-size: 15px;
+  border: 1px solid var(--garis);
+  border-radius: 6px;
+  min-width: 120px;
+}
+
+button {
+  padding: 9px 16px;
+  font-size: 15px;
+  border: none;
+  border-radius: 6px;
+  background: var(--biru);
+  color: white;
+  cursor: pointer;
+}
+
+button.sekunder {
+  background: #6b7785;
+}
+
+button.hapus {
+  background: transparent;
+  color: var(--merah);
+  padding: 4px 8px;
+  font-size: 13px;
+}
+
+button:hover {
+  transition: all 10ms ease;
+  filter: brightness(1.05);
+  transform: scale(1.08);
+}
+
+button:active {
+  filter: brightness(0.8);
+  transform: scale(0.98);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.keranjang {
+  table-layout: fixed;
+}
+
+.keranjang th:nth-child(1),
+.keranjang td:nth-child(1) {
+  width: 30%;
+}
+
+.keranjang th:nth-child(2),
+.keranjang td:nth-child(2) {
+  width: 20%;
+}
+
+.keranjang th:nth-child(3),
+.keranjang td:nth-child(3) {
+  width: 15%;
+}
+
+.keranjang th:nth-child(4),
+.keranjang td:nth-child(4) {
+  width: 25%;
+}
+
+.keranjang th:nth-child(5),
+.keranjang td:nth-child(5) {
+  width: 10%;
+}
+
+th,
+td {
+  padding: 8px;
+  border-bottom: 1px solid var(--garis);
+  text-align: left;
+}
+
+th {
+  background: var(--abu);
+  font-size: 13px;
+}
+
+.angka {
+  text-align: right;
+}
+
+.kosong {
+  text-align: center;
+  color: #6b7785;
+}
+
+.ringkasan {
+  width: 100%;
+  max-width: 360px;
+  margin-left: auto;
+}
+
+.ringkasan td:last-child {
+  text-align: right;
+}
+
+.ringkasan tr.total td {
+  font-weight: bold;
+  font-size: 17px;
+  border-bottom: none;
+}
+
+.member {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+}
+
+.pesan {
+  min-height: 20px;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.pesan.error {
+  color: var(--merah);
+}
+
+.pesan.sukses {
+  color: var(--hijau);
+}
+
+#hasil-bayar {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.halaman-rekap main {
+  max-width: 1100px;
+  display: block;
+}
+
+.halaman-rekap section {
+  overflow-x: auto;
+}
+
+.halaman-rekap a {
+  color: var(--biru);
+}
+
+.halaman-rekap table {
+  font-size: 14px;
+}
+
+.halaman-rekap .angka {
+  white-space: nowrap;
+}
+
+.filter-rekap {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 16px;
+}
+
+.filter-rekap label {
+  display: grid;
+  gap: 5px;
+  font-size: 14px;
+}
+
+.filter-rekap input,
+.filter-rekap select,
+.filter-rekap button {
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--garis);
+  border-radius: 5px;
+  font: inherit;
+}
+
+.filter-rekap input {
+  min-width: 240px;
+}
+
+.filter-rekap button {
+  background: white;
+  color: var(--biru);
+  cursor: pointer;
+}
+
+.filter-rekap button:disabled {
+  background: #e5e7eb;
+  color: #6b7785;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.kotak-Tambah-Pesanan:hover, .kotak-keranjang:hover, .kotak-pembayaran:hover, .rekap:hover {
+  transition: all 50ms ease-in-out;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transform: scale(1.005);
+}

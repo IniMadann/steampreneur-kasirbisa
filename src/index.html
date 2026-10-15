@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kasir Kantin STEAM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Kasir Kantin STEAM</h1>
+    <p>Aplikasi kasir sederhana untuk kantin sekolah</p>
+    <p><a href="rekap.html">Lihat rekap transaksi</a></p>
+  </header>
+
+  <main>
+    <section class="kotak-Tambah-Pesanan">
+      <h2>Tambah Pesanan</h2>
+      <form id="form-tambah">
+        <label>Produk
+          <select id="produk"></select>
+        </label>
+        <label>Jumlah
+          <input id="qty" type="number" min="1" max="99" step="1" value="1" required>
+        </label>
+        <button type="submit">Tambah</button>
+      </form>
+      <div id="pesan" class="pesan"></div>
+    </section>
+
+    <section class="kotak-keranjang">
+      <h2>Keranjang</h2>
+      <table class="keranjang">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th class="angka">Harga</th>
+            <th class="angka">Jumlah</th>
+            <th class="angka">Subtotal</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="isi-keranjang"></tbody>
+      </table>
+    </section>
+
+    <section class="kotak-pembayaran">
+      <h2>Pembayaran</h2>
+      <label class="member"><input id="member" type="checkbox"> Pelanggan member</label>
+      <table class="ringkasan">
+        <tr><td>Subtotal</td><td id="subtotal"></td></tr>
+        <tr><td>Diskon</td><td id="diskon"></td></tr>
+        <tr><td>PPN 11%</td><td id="ppn"></td></tr>
+        <tr class="total"><td>Total</td><td id="total"></td></tr>
+      </table>
+      <div class="baris-bayar">
+        <label>Uang dibayar (Rp)
+          <input id="bayar" type="number" min="0" step="500">
+        </label>
+        <button id="tombol-bayar" type="button">Bayar</button>
+        <button id="tombol-baru" type="button" class="sekunder">Transaksi Baru</button>
+      </div>
+      <div id="hasil-bayar"></div>
+    </section>
+  </main>
+
+  <script src="kasir.js"></script>
+  <script src="transaksi.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

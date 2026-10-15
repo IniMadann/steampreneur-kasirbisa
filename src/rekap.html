@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rekap Transaksi - Kasir Bisa</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="halaman-rekap">
+  <header>
+    <h1>Rekap Transaksi Kasir Bisa</h1>
+  </header>
+  <main>
+    <section class="rekap">
+      <p><a href="index.html">Kembali ke kasir</a></p>
+      <h2>Transaksi Berhasil</h2>
+      <div class="filter-rekap">
+        <label for="cari-transaksi">
+          Cari transaksi
+          <input id="cari-transaksi" type="search" placeholder="Cari produk, waktu, atau nominal">
+        </label>
+        <label for="filter-produk">
+          Filter produk
+          <select id="filter-produk">
+            <option value="">Semua produk</option>
+          </select>
+        </label>
+        <button type="button" id="reset-filter">Hapus filter</button>
+        <button type="button" id="unduh-csv">Unduh CSV</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Waktu</th>
+            <th>Produk</th>
+            <th class="angka">Subtotal</th>
+            <th class="angka">Diskon</th>
+            <th class="angka">PPN</th>
+            <th class="angka">Total</th>
+            <th class="angka">Dibayar</th>
+            <th class="angka">Kembalian</th>
+          </tr>
+        </thead>
+        <tbody id="rekap-transaksi"></tbody>
+      </table>
+    </section>
+  </main>
+  <script src="transaksi.js"></script>
+  <script src="rekap.js"></script>
+
+</body>
+</html>

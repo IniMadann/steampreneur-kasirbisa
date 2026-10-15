@@ -32,12 +32,26 @@ Ringkasan di atas diparafrasekan dari `Hasil transkripsi wawancara.md`; tanggal 
 
 ## 4. Fitur wajib (hanya untuk alur inti)
 
-1. Menampilkan daftar produk dengan harga dan memungkinkan kasir menambahkan produk beserta jumlahnya ke keranjang melalui formulir dengan validasi jumlah.
-2. Menggabungkan jumlah jika produk yang sama ditambahkan lagi, menampilkan subtotal, dan mengizinkan kasir menghapus produk dari keranjang.
-3. Menghitung diskon, PPN, dan total sesuai aturan bisnis; menerima jumlah uang yang dibayarkan melalui formulir dengan validasi; menolak pembayaran yang kurang; serta menampilkan kembalian jika pembayaran cukup.
+1. Menampilkan katalog produk dengan gambar, kategori, harga, pencarian, dan filter kategori; menyediakan tindakan untuk menambahkan produk ke keranjang.
+2. Menggabungkan jumlah produk yang sama; menyediakan kontrol untuk menambah atau mengurangi jumlah (1–99) dan menghapus produk; serta menampilkan subtotal.
+3. Menghitung diskon, PPN, dan total sesuai aturan bisnis; menerima jumlah uang melalui formulir pembayaran dengan validasi; menolak pembayaran yang kurang; meminta konfirmasi sebelum menyimpan; serta menampilkan rincian transaksi dan kembalian.
 4. Menyimpan setiap transaksi yang berhasil dibayar ke penyimpanan browser (localStorage) sehingga tetap ada setelah halaman dimuat ulang.
 5. Menyediakan halaman rekap yang menampilkan kembali daftar transaksi yang sudah tersimpan.
-6. Menyediakan tindakan untuk memulai transaksi baru dan mengosongkan keranjang.
+6. Menyediakan ringkasan penjualan, riwayat transaksi terbaru, dan tindakan untuk memulai transaksi baru atau mengosongkan keranjang.
+
+### Pemetaan fitur ke antarmuka dan kode
+
+Pemetaan berikut merujuk pada antarmuka aplikasi utama di `src/index.html`, bukan halaman Bug Hunt di `bughunt-kasir/`.
+
+| Bagian di `src/index.html` | Elemen antarmuka | Implementasi |
+|---|---|---|
+| Katalog | `#daftar-produk`, `#cari-produk`, `#filter-kategori` | `src/app.js` merender katalog dan menyaring produk; aturan katalog berada di `src/kasir.js`. |
+| Keranjang | `#daftar-keranjang`, tombol `+`, `−`, dan `Hapus` | `src/app.js` menangani tindakan; `tambahItem`, `ubahJumlah`, dan `hapusItem` di `src/kasir.js` memperbarui data. |
+| Ringkasan belanja | `#subtotal`, `#diskon`, `#ppn`, `#total` | `hitungRingkasan` di `src/kasir.js` menjadi sumber nilai subtotal, diskon, PPN, dan total. |
+| Pembayaran | `#member`, `#bayar`, `#nominal-cepat`, `#form-pembayaran` | `src/app.js` memvalidasi formulir, menghitung kembalian, dan meminta konfirmasi sebelum pembayaran disimpan. |
+| Konfirmasi dan struk | `#dialog-transaksi`, `#ringkasan-konfirmasi`, `#rincian-struk` | `ajukanPembayaran` dan `konfirmasiPembayaran` di `src/app.js` mengatur dialog dan hasil pembayaran. |
+| Ringkasan dan riwayat | `#jumlah-transaksi`, `#total-penjualan`, `#riwayat-transaksi` | `renderRiwayat` di `src/app.js` menampilkan ringkasan dan transaksi terbaru. |
+| Rekap transaksi | Tautan ke `src/rekap.html` | `src/rekap.js` membaca transaksi, menyediakan pencarian/filter, dan mengekspor hasil yang tampil ke CSV. |
 
 ## Change request: pencarian, filter, dan ekspor rekap
 
@@ -61,8 +75,8 @@ Pencarian, filter produk, dan ekspor CSV di halaman rekap ditambahkan sebagai ch
 
 ## 6. Aturan bisnis dan perhitungan
 
-1. Jumlah tiap produk harus bilangan bulat dari 1 sampai 99. Formulir membatasi jumlah ke rentang 1–99 dengan langkah 1; validasi `tambahItem` tetap menolak nilai kosong, nol, negatif, pecahan, atau jumlah gabungan di atas 99.
-2. Jika produk yang sudah ada di keranjang ditambahkan lagi, jumlahnya dijumlahkan.
+1. Jumlah tiap produk harus bilangan bulat dari 1 sampai 99. Tombol tambah/nonaktif dan kurangi/nonaktif membatasi kontrol antarmuka ke rentang ini; validasi `tambahItem` dan `ubahJumlah` tetap menolak nilai kosong, nol, negatif, pecahan, atau jumlah gabungan di atas 99.
+2. Jika produk yang sudah ada di keranjang ditambahkan lagi, jumlahnya dijumlahkan; kontrol tambah jumlah juga tidak boleh melewati 99.
 3. **Subtotal** adalah jumlah dari harga setiap produk dikalikan jumlahnya.
 4. Hanya satu diskon yang berlaku:
    - Pelanggan member mendapat diskon 10% dari subtotal.
@@ -78,8 +92,8 @@ Pencarian, filter produk, dan ekspor CSV di halaman rekap ditambahkan sebagai ch
 
 | Data | Contoh isi | Disimpan di mana |
 |---|---|---|
-| Katalog produk contoh | K01, Nasi Goreng, Rp15.000 | Berkas kode website di `src/`; bukan data kantin yang telah diverifikasi |
-| Isi keranjang aktif | K04, Es Teh, jumlah 2 | Memori halaman selama transaksi berlangsung |
+| Katalog produk contoh | Nasi kuning, Rp8.000, kategori Makanan, gambar katalog | Berkas kode website di `src/` dan aset lokal; bukan data kantin yang telah diverifikasi |
+| Isi keranjang aktif | Nasi kuning, jumlah 2 | Memori halaman selama transaksi berlangsung |
 | Riwayat transaksi | Waktu, daftar produk, subtotal, diskon, PPN, total, uang dibayar, kembalian | localStorage browser; tetap ada setelah halaman dimuat ulang, hanya pada browser dan perangkat yang sama |
 | Data wawancara | Ringkasan jawaban penjaga kantin | Dokumen proyek `Hasil transkripsi wawancara.md`; bukan data aplikasi |
 
@@ -103,7 +117,7 @@ Kotak dicentang hanya jika kriteria telah diuji; status dan bukti dicatat di `04
 | Syarat minimum | Dipenuhi oleh |
 |---|---|
 | Alur inti minimal tiga langkah | Pilih produk, periksa rincian dan total, bayar dan lihat kembalian, lalu transaksi tersimpan (fitur 1 sampai 4) |
-| Formulir dengan validasi | Formulir tambah produk (jumlah) dan formulir pembayaran (uang dibayar), aturan 1 dan 7 |
+| Formulir dengan validasi | Formulir pembayaran (uang dibayar), validasi jumlah dan batas keranjang di logika kasir, aturan 1 dan 7 |
 | Perhitungan yang bisa diuji | Subtotal, diskon, PPN, total, dan kembalian, aturan 3 sampai 7 |
 | Data tersimpan | Riwayat transaksi di localStorage (fitur 4) |
 | Halaman daftar atau rekap | Halaman rekap transaksi (fitur 5) |

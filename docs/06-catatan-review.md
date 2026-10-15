@@ -22,6 +22,8 @@ Prompt di atas merupakan ringkasan tujuan review, bukan kutipan persis dari riwa
 
 ## Catatan pemeriksaan Bug Hunt
 
+Tabel di atas membahas program latihan Bug Hunt (`bughunt-kasir/`), bukan antarmuka aplikasi utama. Keduanya menggunakan sebagian aturan bisnis yang sama, tetapi kode dan bukti pengujiannya tidak boleh dianggap sebagai satu aplikasi.
+
 Catatan Bug Hunt menunjukkan bahwa kode awal memiliki tujuh masalah yang didokumentasikan, disertai gejala, penyebab, aturan bisnis terkait, dan nama pengujian. Saran review di atas merupakan bagian dari pemeriksaan yang dapat diverifikasi dari hasil bug hunt dan perbaikan yang kemudian diterapkan pada kode. Keputusan menerima setiap saran didasarkan pada kesesuaian dengan spesifikasi dan bukti pengujian di `test/kasir.test.js`, serta dokumentasi di `bughunt-kasir/catatan-bug.md`.
 
-Catatan tambahan setelah klarifikasi tim: keluaran AI sebelumnya belum menyelesaikan validasi jumlah negatif dengan baik dari sisi formulir dan sempat salah menangani aturan diskon. Karena itu, tabel saran review di atas tidak berarti seluruh keluaran awal AI sudah benar. Perbaikan akhir di aplikasi utama menambahkan batas HTML jumlah pada `src/index.html`, mempertahankan validasi ketat pada `src/kasir.js`, serta memastikan diskon member 10% tidak ditumpuk dengan diskon non-member 5%. Rincian kesalahan dan cara menemukannya dicatat di `05-kesalahan-ai.md`.
+Catatan tambahan: keluaran awal AI pada pengerjaan Bug Hunt belum menyelesaikan validasi jumlah dan aturan diskon dengan benar. Pada aplikasi utama, `src/index.html` menggunakan tombol tambah/kurang alih-alih kolom jumlah bebas; `src/app.js` membatasi tombol pada jumlah 1–99 dan `src/kasir.js` memvalidasi perubahan jumlah serta perhitungan diskon. Rincian kesalahan AI dan perbedaan antarmuka awal/final dicatat di `05-kesalahan-ai.md`; status bukti retest antarmuka utama dicatat di `04-kasus-uji.md`.

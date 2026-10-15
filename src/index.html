@@ -3,70 +3,123 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kasir Kantin STEAM</title>
+  <meta name="theme-color" content="#145c47">
+  <title>Kasir Bisa — Kasir Kantin</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Kasir Kantin STEAM</h1>
-    <p>Aplikasi kasir sederhana untuk kantin sekolah</p>
-    <p><a href="rekap.html">Lihat rekap transaksi</a></p>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Kasir Bisa, halaman kasir">
+      <span class="brand-mark" aria-hidden="true">KB</span>
+      <span><strong>Kasir Bisa</strong><small>Kasir kantin sederhana</small></span>
+    </a>
+    <a class="header-link" href="rekap.html">Rekap transaksi <span aria-hidden="true">→</span></a>
   </header>
 
   <main>
-    <section class="kotak-Tambah-Pesanan">
-      <h2>Tambah Pesanan</h2>
-      <form id="form-tambah">
-        <label>Produk
-          <select id="produk"></select>
-        </label>
-        <label>Jumlah
-          <input id="qty" type="number" min="1" max="99" step="1" value="1" required>
-        </label>
-        <button type="submit">Tambah</button>
-      </form>
-      <div id="pesan" class="pesan"></div>
-    </section>
-
-    <section class="kotak-keranjang">
-      <h2>Keranjang</h2>
-      <table class="keranjang">
-        <thead>
-          <tr>
-            <th>Produk</th>
-            <th class="angka">Harga</th>
-            <th class="angka">Jumlah</th>
-            <th class="angka">Subtotal</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="isi-keranjang"></tbody>
-      </table>
-    </section>
-
-    <section class="kotak-pembayaran">
-      <h2>Pembayaran</h2>
-      <label class="member"><input id="member" type="checkbox"> Pelanggan member</label>
-      <table class="ringkasan">
-        <tr><td>Subtotal</td><td id="subtotal"></td></tr>
-        <tr><td>Diskon</td><td id="diskon"></td></tr>
-        <tr><td>PPN 11%</td><td id="ppn"></td></tr>
-        <tr class="total"><td>Total</td><td id="total"></td></tr>
-      </table>
-      <div class="baris-bayar">
-        <label>Uang dibayar (Rp)
-          <input id="bayar" type="number" min="0" step="500">
-        </label>
-        <button id="tombol-bayar" type="button">Bayar</button>
-        <button id="tombol-baru" type="button" class="sekunder">Transaksi Baru</button>
+    <section class="welcome">
+      <div>
+        <p class="eyebrow">KASIR KANTIN</p>
+        <h1>Selamat berjualan!</h1>
+        <p>Pilih produk, atur jumlah, lalu selesaikan pembayaran.</p>
       </div>
-      <div id="hasil-bayar"></div>
+      <div class="sales-stats" aria-live="polite">
+        <div><span>Transaksi</span><strong id="jumlah-transaksi">0</strong></div>
+        <div><span>Total penjualan</span><strong id="total-penjualan">Rp0</strong></div>
+      </div>
+    </section>
+
+    <div id="pesan" class="notice" role="status" aria-live="polite"></div>
+
+    <div class="workspace">
+      <section class="catalog-panel" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div><p class="eyebrow">KATALOG</p><h2 id="catalog-title">Pilih produk</h2></div>
+          <span id="jumlah-produk" class="muted"></span>
+        </div>
+        <div class="product-filters">
+          <label><span class="visually-hidden">Cari produk</span>
+            <input id="cari-produk" type="search" placeholder="Cari produk..." autocomplete="off">
+          </label>
+          <label><span class="visually-hidden">Kategori produk</span>
+            <select id="filter-kategori"></select>
+          </label>
+        </div>
+        <div id="daftar-produk" class="product-grid"></div>
+      </section>
+
+      <aside class="checkout-panel">
+        <section class="cart-card" aria-labelledby="cart-title">
+          <div class="section-heading">
+            <div><p class="eyebrow">PESANAN</p>
+              <h2 id="cart-title">Keranjang <span id="jumlah-keranjang" class="count-badge">0</span></h2>
+            </div>
+            <button id="kosongkan-keranjang" class="text-button" type="button">Kosongkan</button>
+          </div>
+          <div id="keranjang-kosong" class="empty-state">
+            <span aria-hidden="true">🛒</span>
+            <p>Keranjang masih kosong</p>
+            <small>Pilih produk untuk memulai transaksi.</small>
+          </div>
+          <div id="daftar-keranjang" class="cart-list"></div>
+          <div class="price-summary">
+            <div><span>Subtotal</span><strong id="subtotal">Rp0</strong></div>
+            <div><span>Diskon</span><strong id="diskon">-Rp0</strong></div>
+            <div><span>PPN 11%</span><strong id="ppn">Rp0</strong></div>
+            <div class="total-row"><span>Total</span><strong id="total">Rp0</strong></div>
+          </div>
+        </section>
+
+        <section class="payment-card" aria-labelledby="payment-title">
+          <p class="eyebrow">PEMBAYARAN</p>
+          <h2 id="payment-title">Uang diterima</h2>
+          <label class="member-option">
+            <input id="member" type="checkbox">
+            <span>Pelanggan member <small>Diskon 10%</small></span>
+          </label>
+          <form id="form-pembayaran" novalidate>
+            <label class="amount-field" for="bayar">
+              <span class="currency-prefix">Rp</span>
+              <input id="bayar" type="number" min="0" step="1" inputmode="numeric" placeholder="0" required>
+            </label>
+            <div id="nominal-cepat" class="quick-amounts" aria-label="Pilihan nominal pembayaran"></div>
+            <div class="change-row"><span>Kembalian</span><strong id="kembalian">Rp0</strong></div>
+            <button id="tombol-bayar" class="primary-button" type="submit" disabled>Bayar</button>
+          </form>
+          <button id="tombol-baru" class="secondary-button" type="button">Transaksi baru</button>
+        </section>
+      </aside>
+    </div>
+
+    <section class="history-panel" aria-labelledby="history-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">AKTIVITAS</p><h2 id="history-title">Riwayat transaksi</h2></div>
+        <a href="rekap.html">Lihat rekap lengkap <span aria-hidden="true">→</span></a>
+      </div>
+      <div id="riwayat-transaksi" class="history-list"></div>
     </section>
   </main>
+
+  <dialog id="dialog-transaksi" aria-labelledby="judul-dialog">
+    <div id="langkah-konfirmasi">
+      <p class="eyebrow">PERIKSA PESANAN</p>
+      <h2 id="judul-dialog">Konfirmasi pembayaran</h2>
+      <div id="ringkasan-konfirmasi" class="dialog-summary"></div>
+      <div class="dialog-actions">
+        <button id="batal-konfirmasi" class="secondary-button" type="button">Kembali</button>
+        <button id="konfirmasi-pembayaran" class="primary-button" type="button">Konfirmasi &amp; bayar</button>
+      </div>
+    </div>
+    <div id="langkah-struk" hidden>
+      <p class="eyebrow">TRANSAKSI BERHASIL</p>
+      <h2>Rincian transaksi</h2>
+      <div id="rincian-struk" class="dialog-summary"></div>
+      <button id="tutup-struk" class="primary-button" type="button">Selesai</button>
+    </div>
+  </dialog>
 
   <script src="kasir.js"></script>
   <script src="transaksi.js"></script>
   <script src="app.js"></script>
-
 </body>
 </html>

@@ -1,0 +1,18 @@
+# Log Prompt
+
+**Alat AI yang dipakai:** Copilot di VS Code.
+
+Catatan ini merangkum penggunaan AI selama pengerjaan proyek Kasir Bisa. Prompt ditulis dalam bentuk ringkasan agar mudah dibaca. Waktu yang tidak tercatat pada riwayat pengerjaan ditandai apa adanya dan tidak diperkirakan.
+
+| No | Waktu | Langkah ke- | Prompt (ringkas) | Hasil dari AI | Keputusan |
+|---|---|---|---|---|---|
+| 1 | 13 Oktober 2026 | 1–2 | Bantu memahami struktur proyek, fungsi folder, urutan pengerjaan, dan cara menerapkan ketentuan challenge ke dalam rencana kerja. | Penjelasan struktur proyek, tahapan pengerjaan, dan pemetaan persyaratan ke dokumen. | Digunakan sebagai panduan, kemudian disesuaikan dengan struktur dan kebutuhan proyek. |
+| 2 | 14 Oktober 2026 | 3 | Bantu menyusun kasus uji berdasarkan aturan bisnis, termasuk validasi jumlah barang, diskon, PPN, pembayaran, kembalian, dan penyimpanan transaksi. | Rancangan kasus uji beserta input dan hasil yang diharapkan. | Digunakan sebagai acuan; hasil perhitungan dan kesesuaiannya tetap perlu diperiksa. |
+| 3 | 14 Oktober 2026 | 4 | Bantu memeriksa bug pada kode, menjelaskan penyebabnya, dan menyarankan perbaikan yang sesuai dengan aturan bisnis. | Analisis gejala, kemungkinan penyebab, dan usulan perbaikan kode. | Digunakan sebagai bantuan debugging dengan memeriksa perilaku program dan hasil pengujian. |
+| 4 | 14 Oktober 2026 | 4 | Periksa apakah perbaikan bug sudah sesuai dengan ketentuan dan apakah terdapat kasus lain yang belum ditangani. | Daftar aspek yang perlu diperiksa kembali serta kemungkinan kasus tepi. | Digunakan untuk membantu pemeriksaan; status akhir harus ditentukan berdasarkan hasil pengujian. |
+| 5 | 14 Oktober 2026 | 1–4 | Bantu menyusun dokumentasi proyek dan memeriksa konsistensi antara spesifikasi, rencana kerja, kasus uji, dan ketentuan challenge. | Rancangan dokumentasi serta daftar bagian yang perlu dilengkapi atau diverifikasi. | Digunakan sebagai draf dan disesuaikan dengan keadaan proyek yang sebenarnya. |
+| 6 | 15 Oktober 2026 | 3 | Perbaiki agar CSV tidak dapat diunduh ketika rekap kosong atau hasil pencarian/filter tidak memiliki data. | Pemeriksaan data sebelum ekspor, tombol dinonaktifkan saat tidak ada data, serta test untuk skenario hasil kosong. | Diterapkan setelah tim menyadari bug tersebut; unit test aplikasi dijalankan ulang dan lulus 16/16. |
+| 7 | 15 Oktober 2026 | 3 | Pindahkan CSS internal ke stylesheet eksternal dan pertahankan tampilan halaman kasir serta rekap. | CSS dipindahkan ke `src/style.css`; perubahan lanjutan pada tabel keranjang sempat merusak pembagian kolom. | Tim Kasir Bisa menemukan masalah visual dan meminta evaluasi ulang; aturan tabel kemudian diperbaiki dan diperiksa di browser pada kondisi kosong serta berisi data. |
+| 8 | 15 Oktober 2026 | 3 | Catat kesalahan AI terkait ekspor CSV kosong dan perubahan visual tabel keranjang dalam dokumen kesalahan AI. | Entri kesalahan, cara tim menemukannya, perbaikan, dan pelajaran pengujian ditambahkan ke `05-kesalahan-ai.md`. | Diperiksa dan dikoreksi berdasarkan klarifikasi tim, termasuk peran tim dalam menemukan masalah tabel. |
+
+**Catatan:** Tabel ini merupakan ringkasan aktivitas penggunaan AI, bukan transkrip lengkap. Waktu rinci untuk aktivitas lama tidak tersedia, sehingga ditandai “Tidak tercatat”; tanggal aktivitas terbaru dicatat tanpa mengarang jam. Nomor langkah mengikuti pemetaan dokumen proyek.

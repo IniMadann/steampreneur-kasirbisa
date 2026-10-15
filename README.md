@@ -1,81 +1,83 @@
-[README.md](https://github.com/user-attachments/files/33435088/README.md)
 # Kasir Bisa
 
-Kasir Bisa adalah website kasir sederhana untuk membantu kasir kantin sekolah menghitung transaksi dan melihat kembali catatan transaksinya. Dikerjakan oleh tim Kasir Bisa untuk Sayembara STEAMpreneur.
-
-**Status: dalam pengerjaan.** Saat ini repositori berisi dokumen perencanaan (spesifikasi, kasus uji, rencana). Kode website belum dibuat. Bagian di bawah yang belum tersedia ditandai jelas dan akan dilengkapi seiring pekerjaan.
-
-## Alur Inti
-
-Rencana alur inti (belum dibangun):
-
-1. Kasir memilih produk dan jumlahnya, lalu menambahkannya ke keranjang.
-2. Kasir memeriksa rincian: subtotal, diskon, PPN, dan total.
-3. Kasir memasukkan uang yang dibayarkan dan melihat kembalian.
-4. Transaksi yang berhasil tersimpan dan dapat dilihat di halaman rekap.
-
-Rincian lengkap ada di `docs/01-spesifikasi.md`.
-
-## Cara Menjalankan (How to Run)
-
-Belum tersedia karena website belum dibuat. Bagian ini diisi setelah versi pertama alur inti berjalan.
-
-### Prasyarat (rencana)
-
-- Browser modern (Chrome, Edge, atau Firefox).
-- Node.js versi 18 atau lebih baru untuk menjalankan pengujian otomatis.
-- Git untuk meng-clone repositori.
-
-### Mengambil repositori
-
-```
-git clone https://github.com/IniMadann/steampreneur-kasirbisa.git
-cd steampreneur-kasirbisa
-```
-
-### Akun atau data contoh
-
-Tidak ada login atau akun. Katalog produk yang dipakai adalah data contoh, bukan daftar harga kantin yang sudah dikonfirmasi.
-
-## Tangkapan Layar Alur Inti
-
-Belum tersedia. Akan disimpan di `docs/bukti/` setelah website berjalan dan diuji.
-
-## Cara Menjalankan Pengujian
-
-Belum tersedia. Pengujian otomatis direncanakan di folder `tes/` dan dijalankan dengan `node --test`. Kasus uji yang sudah disusun ada di `docs/04-kasus-uji.md` (belum dijalankan).
+Kasir Bisa adalah aplikasi kasir berbasis web untuk membantu kasir kantin sekolah mencatat pesanan, menghitung pembayaran, dan melihat riwayat transaksi. Aplikasi ini dibuat oleh tim Kasir Bisa untuk Sayembara STEAMpreneur.
 
 ## Fitur
 
-Belum ada fitur yang selesai. Fitur yang direncanakan ada di bagian 4 `docs/01-spesifikasi.md`.
+- Memilih produk dari katalog contoh dan menambahkannya ke keranjang.
+- Menggabungkan jumlah saat produk yang sama ditambahkan kembali, dengan batas 1–99 per produk.
+- Menghitung subtotal, diskon, PPN 11%, total, dan kembalian.
+- Menerapkan diskon member 10%, atau diskon non-member 5% jika subtotal minimal Rp100.000. Diskon tidak ditumpuk.
+- Menolak jumlah yang tidak valid dan pembayaran yang kurang.
+- Menyimpan transaksi berhasil di `localStorage` browser.
+- Menampilkan rekap transaksi dengan pencarian waktu, produk, atau nominal; filter produk; serta ekspor CSV mengikuti hasil filter.
 
-## Batasan yang Diketahui
+## Alur Inti
 
-- Website belum dibangun.
-- Data produk yang direncanakan hanya data contoh.
-- Data transaksi direncanakan disimpan di browser (localStorage), sehingga hanya tersedia di browser dan perangkat yang sama.
+1. Kasir memilih produk dan jumlahnya, lalu menambahkannya ke keranjang.
+2. Kasir memeriksa rincian belanja: subtotal, diskon, PPN, dan total.
+3. Kasir memasukkan uang pembayaran. Jika pembayaran cukup, aplikasi menghitung kembalian dan menyimpan transaksi.
+4. Kasir dapat membuka halaman rekap untuk melihat transaksi tersimpan, mencari atau memfilter transaksi, dan mengunduh hasilnya sebagai CSV.
 
-## Struktur Folder
+## Cara Menjalankan
 
-| File / folder | Isi |
+Aplikasi tidak memerlukan instalasi paket. Jalankan melalui server web lokal agar penyimpanan browser dapat digunakan secara konsisten.
+
+### Menggunakan XAMPP
+
+1. Letakkan folder proyek di dalam direktori `htdocs` XAMPP.
+2. Jalankan Apache dari XAMPP Control Panel.
+3. Buka `src/index.html` melalui alamat lokal proyek, misalnya `http://localhost/nama-folder-proyek/src/`.
+4. Pilih **Lihat rekap transaksi** untuk membuka halaman rekap.
+
+### Prasyarat
+
+- Browser modern seperti Chrome, Edge, atau Firefox.
+- Node.js versi 18 atau lebih baru untuk menjalankan pengujian.
+
+Tidak ada login atau akun. Produk dan harga yang tersedia merupakan data contoh, bukan katalog harga kantin yang telah dikonfirmasi.
+
+## Menjalankan Pengujian
+
+Dari direktori utama proyek, jalankan:
+
+```sh
+node --test test/*.test.js
+```
+
+Pengujian menggunakan test runner bawaan Node.js, tanpa paket tambahan. Kasus uji dan bukti pengujian manual tersedia di `docs/04-kasus-uji.md` dan `docs/bukti/`.
+
+## Perhitungan
+
+- **Subtotal** adalah jumlah harga produk dikalikan kuantitasnya.
+- **Diskon**: member mendapat 10%; non-member mendapat 5% jika subtotal minimal Rp100.000. Hanya satu jenis diskon yang berlaku.
+- **PPN** sebesar 11% dihitung dari subtotal setelah diskon dan dibulatkan ke rupiah terdekat.
+- **Total** adalah subtotal dikurangi diskon, ditambah PPN.
+- Transaksi hanya disimpan setelah pembayaran mencukupi. Kembalian adalah jumlah dibayar dikurangi total.
+
+## Penyimpanan dan Batasan
+
+Riwayat transaksi disimpan di `localStorage`, sehingga tersedia kembali setelah halaman dimuat ulang pada browser dan perangkat yang sama. Data tidak disinkronkan ke server atau perangkat lain. Keranjang yang belum dibayar hanya tersimpan selama halaman kasir aktif.
+
+Aplikasi ini tidak mencakup login, basis data server, sinkronisasi antarperangkat, pembayaran digital, printer struk, pengelolaan stok, atau pengelolaan katalog melalui halaman administrasi.
+
+## Struktur Proyek
+
+| Lokasi | Isi |
 |---|---|
-| `docs/` | Dokumen proses kerja: spesifikasi, rencana, kasus uji, dan dokumen lain yang ditambahkan seiring pekerjaan |
-| `src/` | Kode website (belum dibuat) |
-| `tes/` | Unit test (belum dibuat) |
-| `bughunt-kasir/` | Hasil Bug Hunt (akan ditambahkan pada tahap Bug Hunt) |
+| `src/` | Aplikasi web kasir, halaman rekap, logika transaksi, dan stylesheet |
+| `test/` | Pengujian otomatis untuk logika kasir dan rekap |
+| `docs/` | Spesifikasi, rencana, dokumentasi proses, kasus uji, dan bukti |
+| `bughunt-kasir/` | Berkas dan dokumentasi untuk kegiatan Bug Hunt |
 
-## Link Demo (opsional)
+## Repositori
 
-Belum ada.
-
-## Sumber dan Lisensi
-
-Belum ada library, template, gambar, ikon, atau font pihak ketiga yang dipakai. Daftar ini diperbarui jika ada yang ditambahkan.
+[steampreneur-ecowin-3d](https://github.com/rizkyafrino14/steampreneur-ecowin-3d)
 
 ## Tim
 
 | Nama | Peran |
 |---|---|
-| Muh. Rizky Ramadhan | Navigator utama |
+| Laode Azharil Nur Ibrahim Nunsyah | Navigator utama |
 | Ahmad Fadil | Penguji |
-| Laode Azharil Nur Ibrahim Nunsyah | Analis kebutuhan dan dokumentator |
+| Muh. Rizky Ramadhan | Dokumentator |

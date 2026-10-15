@@ -4,19 +4,20 @@ Kasir Bisa adalah aplikasi kasir berbasis web untuk membantu kasir kantin sekola
 
 ## Fitur
 
-- Memilih produk dari katalog contoh dan menambahkannya ke keranjang.
-- Menggabungkan jumlah saat produk yang sama ditambahkan kembali, dengan batas 1–99 per produk.
+- Memilih produk dari katalog bergambar, mencari nama produk, dan memfilter kategori.
+- Menambahkan produk ke keranjang, mengubah jumlah dengan tombol tambah/kurang, dan menghapus item. Jumlah per produk dibatasi 1–99.
 - Menghitung subtotal, diskon, PPN 11%, total, dan kembalian.
 - Menerapkan diskon member 10%, atau diskon non-member 5% jika subtotal minimal Rp100.000. Diskon tidak ditumpuk.
-- Menolak jumlah yang tidak valid dan pembayaran yang kurang.
+- Menolak jumlah dan pembayaran yang tidak valid, lalu meminta konfirmasi sebelum menyimpan transaksi.
+- Menampilkan rincian pembayaran/struk di layar, ringkasan penjualan, dan riwayat transaksi terbaru.
 - Menyimpan transaksi berhasil di `localStorage` browser.
 - Menampilkan rekap transaksi dengan pencarian waktu, produk, atau nominal; filter produk; serta ekspor CSV mengikuti hasil filter.
 
 ## Alur Inti
 
-1. Kasir memilih produk dan jumlahnya, lalu menambahkannya ke keranjang.
+1. Kasir mencari atau memfilter katalog, lalu memilih produk untuk menambahkannya ke keranjang. Tekan `+` atau `−` untuk mengatur jumlah, dan `Hapus` untuk menghapus item.
 2. Kasir memeriksa rincian belanja: subtotal, diskon, PPN, dan total.
-3. Kasir memasukkan uang pembayaran. Jika pembayaran cukup, aplikasi menghitung kembalian dan menyimpan transaksi.
+3. Kasir memilih status member, memasukkan uang pembayaran (atau memilih nominal cepat), lalu memeriksa konfirmasi. Transaksi disimpan setelah pembayaran dikonfirmasi dan mencukupi; aplikasi menampilkan kembalian serta rincian transaksi.
 4. Kasir dapat membuka halaman rekap untuk melihat transaksi tersimpan, mencari atau memfilter transaksi, dan mengunduh hasilnya sebagai CSV.
 
 ## Cara Menjalankan
@@ -40,12 +41,12 @@ Aplikasi ini adalah website statis. Anda tidak perlu memasang XAMPP, server, ata
 
 ### Menggunakan Kasir dan Melihat Rekap
 
-1. Pada halaman kasir, pilih produk dari daftar **Produk**.
-2. Masukkan jumlah pada kolom **Jumlah**, lalu tekan **Tambah**. Ulangi untuk memasukkan produk lain. Produk yang sama akan digabungkan jumlahnya.
+1. Pada halaman kasir, cari nama produk atau pilih kategori di bagian **Katalog**, lalu tekan **Tambah** pada kartu produk.
+2. Pada **Keranjang**, atur kuantitas dengan tombol `+` dan `−`. Produk yang sama digabungkan; jumlah per produk dibatasi 1–99. Tekan **Hapus** untuk mengeluarkan produk dari keranjang.
 3. Periksa keranjang serta nilai subtotal, diskon, PPN, dan total.
-4. Jika pembeli adalah member, centang **Pelanggan member** sebelum membayar. Jika bukan member, biarkan kotak itu tidak dicentang. Diskon dan total akan menyesuaikan.
-5. Masukkan jumlah uang pada kolom **Uang dibayar (Rp)**. Pastikan nilainya sama dengan atau lebih besar dari total, lalu tekan **Bayar**. Pembayaran yang kurang akan ditolak dan tidak disimpan sebagai transaksi.
-6. Untuk transaksi berikutnya, pilih produk dan jumlah lagi; keranjang akan mulai kosong setelah pembayaran berhasil. Anda juga dapat memakai **Transaksi Baru** untuk mengosongkan keranjang yang belum dibayar.
+4. Jika pembeli adalah member, centang **Pelanggan member**. Jika bukan member, biarkan kotak itu tidak dicentang. Diskon dan total akan menyesuaikan.
+5. Masukkan jumlah uang pada kolom **Uang diterima**, atau pilih salah satu nominal cepat. Pastikan nilainya cukup, lalu tekan **Bayar** dan periksa konfirmasi sebelum memilih **Konfirmasi & bayar**. Pembayaran yang kurang tidak dapat dikonfirmasi atau disimpan.
+6. Setelah pembayaran berhasil, aplikasi menampilkan rincian transaksi. Tekan **Selesai**. Untuk membatalkan pesanan yang belum dibayar, gunakan **Transaksi baru** atau **Kosongkan**.
 7. Tekan **Lihat rekap transaksi** di bagian atas halaman kasir untuk membuka daftar transaksi yang berhasil disimpan.
 8. Di halaman rekap, cari transaksi melalui kolom **Cari transaksi** dan/atau pilih produk pada **Filter produk**. Tekan **Hapus filter** untuk menampilkan semua transaksi kembali.
 9. Tekan **Unduh CSV** untuk mengunduh transaksi yang sedang tampil setelah pencarian dan filter diterapkan. Buka berkas CSV hasil unduhan dengan aplikasi spreadsheet seperti Microsoft Excel.
@@ -65,7 +66,7 @@ Dari direktori utama proyek, jalankan:
 node --test test/*.test.js
 ```
 
-Pengujian menggunakan test runner bawaan Node.js, tanpa paket tambahan. Kasus uji dan bukti pengujian manual tersedia di `docs/04-kasus-uji.md` dan `docs/bukti/`.
+Pengujian menggunakan test runner bawaan Node.js, tanpa paket tambahan. Kasus uji tersedia di `docs/04-kasus-uji.md`. Sebagian screenshot di `docs/bukti/` berasal dari antarmuka iterasi sebelumnya dan tidak boleh dianggap sebagai bukti retest untuk katalog final yang dijalankan dari `src/index.html`; status bukti dicatat pada dokumen kasus uji.
 
 ## Perhitungan
 
@@ -85,10 +86,14 @@ Aplikasi ini tidak mencakup login, basis data server, sinkronisasi antarperangka
 
 | Lokasi | Isi |
 |---|---|
-| `src/` | Aplikasi web kasir, halaman rekap, logika transaksi, dan stylesheet |
+| `src/` | Aplikasi web kasir bergambar, halaman rekap, logika transaksi, dan stylesheet |
 | `test/` | Pengujian otomatis untuk logika kasir dan rekap |
 | `docs/` | Spesifikasi, rencana, dokumentasi proses, kasus uji, dan bukti |
 | `bughunt-kasir/` | Berkas dan dokumentasi untuk kegiatan Bug Hunt |
+
+Foto katalog menggunakan berkas lokal di `src/gambar/`; halaman kasir dan logikanya berada di `src/`. Tidak perlu membuka atau menjalankan berkas aplikasi lain untuk menampilkan katalog.
+
+Dokumentasi antarmuka dipetakan ke elemen `src/index.html` di `docs/01-spesifikasi.md`. Perbedaan antara bukti Bug Hunt, screenshot antarmuka lama, dan status retest aplikasi utama dijelaskan di `docs/04-kasus-uji.md`.
 
 ## Repositori
 

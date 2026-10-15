@@ -21,7 +21,34 @@ Kasir Bisa adalah aplikasi kasir berbasis web untuk membantu kasir kantin sekola
 
 ## Cara Menjalankan
 
-Aplikasi ini adalah website statis dan tidak memerlukan XAMPP, server, atau instalasi paket untuk dijalankan. Buka file `src/index.html` langsung dengan browser, atau gunakan cara biasa yang sudah Anda pakai untuk menjalankan website statis. Pilih **Lihat rekap transaksi** untuk membuka halaman rekap.
+Aplikasi ini adalah website statis. Anda tidak perlu memasang XAMPP, server, atau paket tambahan.
+
+### Menyiapkan dan Membuka Aplikasi
+
+1. Unduh ZIP proyek dari halaman GitHub dengan memilih **Code** lalu **Download ZIP**.
+2. Setelah unduhan selesai, buka folder **Downloads/Unduhan**, klik kanan file ZIP, lalu pilih **Extract All... / Ekstrak Semua...**. Anda boleh mengekstraknya ke folder lain yang mudah ditemukan.
+3. Buka folder hasil ekstrak. Masuk ke folder `steampreneur-kasirbisa-main`, lalu buka folder `src`.
+4. Klik dua kali `index.html`. Jika diminta memilih aplikasi, pilih browser seperti Google Chrome, Microsoft Edge, atau browser bawaan laptop.
+
+   Contoh lokasi file di Windows:
+
+   ```text
+   C:\Users\HP\Downloads\steampreneur-kasirbisa-main\src\index.html
+   ```
+
+   Nama folder dapat berbeda, misalnya ditambahkan angka `(1)` jika folder dengan nama yang sama sudah ada. Yang penting, buka `src\index.html` di dalam folder hasil ekstrak.
+
+### Menggunakan Kasir dan Melihat Rekap
+
+1. Pada halaman kasir, pilih produk dari daftar **Produk**.
+2. Masukkan jumlah pada kolom **Jumlah**, lalu tekan **Tambah**. Ulangi untuk memasukkan produk lain. Produk yang sama akan digabungkan jumlahnya.
+3. Periksa keranjang serta nilai subtotal, diskon, PPN, dan total.
+4. Jika pembeli adalah member, centang **Pelanggan member** sebelum membayar. Jika bukan member, biarkan kotak itu tidak dicentang. Diskon dan total akan menyesuaikan.
+5. Masukkan jumlah uang pada kolom **Uang dibayar (Rp)**. Pastikan nilainya sama dengan atau lebih besar dari total, lalu tekan **Bayar**. Pembayaran yang kurang akan ditolak dan tidak disimpan sebagai transaksi.
+6. Untuk transaksi berikutnya, pilih produk dan jumlah lagi; keranjang akan mulai kosong setelah pembayaran berhasil. Anda juga dapat memakai **Transaksi Baru** untuk mengosongkan keranjang yang belum dibayar.
+7. Tekan **Lihat rekap transaksi** di bagian atas halaman kasir untuk membuka daftar transaksi yang berhasil disimpan.
+8. Di halaman rekap, cari transaksi melalui kolom **Cari transaksi** dan/atau pilih produk pada **Filter produk**. Tekan **Hapus filter** untuk menampilkan semua transaksi kembali.
+9. Tekan **Unduh CSV** untuk mengunduh transaksi yang sedang tampil setelah pencarian dan filter diterapkan. Buka berkas CSV hasil unduhan dengan aplikasi spreadsheet seperti Microsoft Excel.
 
 ### Prasyarat
 
